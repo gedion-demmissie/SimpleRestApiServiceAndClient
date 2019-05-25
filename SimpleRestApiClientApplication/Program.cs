@@ -24,7 +24,8 @@ namespace SimpleRestApiClientApplication
         {
             var dateTimeServedContent =  ProcessDateTimeResponsePayload().Result;           
             Console.WriteLine($"The served content time from the Rest api is: {dateTimeServedContent.CurrentDateTimeFromServer}.");               
-            Console.WriteLine();            
+            Console.WriteLine();
+            Console.ReadKey();
         }
 
         private static async Task<DateTimeResponsePayload> ProcessDateTimeResponsePayload()
