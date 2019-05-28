@@ -13,36 +13,21 @@ namespace SimpleRestApiClientApplication
     /// Program to drive the SimpleRestApi service
     /// </summary>
     class Program
-    {
-        private static readonly HttpClient client = new HttpClient();
-
+    {        
         private static IConfigurationBuilder builder = new ConfigurationBuilder()
                                                           .SetBasePath(Directory.GetCurrentDirectory())
                                                           .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
                                                           .AddEnvironmentVariables();
         static  void  Main(string[] args)
         {
-            var dateTimeServedContent =  ProcessDateTimeResponsePayload().Result;           
+            var restApiClientConfig = new RestApiClientConfig();
+            builder.Build().GetSection("RestApiClient").Bind(restApiClientConfig);
+
+            var dateTimeServedContent =  RestApiClient<DateTimeResponsePayload>.Get(url:restApiClientConfig.EndPointUrl, contentType:restApiClientConfig.ContentType , userAgent:restApiClientConfig.UserAgent).Result;  
+           
             Console.WriteLine($"The served content time from the Rest api is: {dateTimeServedContent.CurrentDateTimeFromServer}.");               
             Console.WriteLine();
             Console.ReadKey();
-        }
-
-        private static async Task<DateTimeResponsePayload> ProcessDateTimeResponsePayload()
-        {
-            var serializer = new DataContractJsonSerializer(typeof(DateTimeResponsePayload));
-            var restApiClientConfig = new RestApiClientConfig();
-           
-             builder.Build().GetSection("RestApiClient").Bind(restApiClientConfig);
-            client.DefaultRequestHeaders.Accept.Clear();
-            client.DefaultRequestHeaders.Accept.Add(
-                new MediaTypeWithQualityHeaderValue(restApiClientConfig.ContentType));
-            client.DefaultRequestHeaders.Add("User-Agent", restApiClientConfig.UserAgent);
-
-            var streamTask = client.GetStreamAsync(restApiClientConfig.EndPointUrl);
-            var dateTimeResponsePayload = serializer.ReadObject(await streamTask) as DateTimeResponsePayload;
-            return dateTimeResponsePayload;
-        }
-       
+        }       
     }
 }
