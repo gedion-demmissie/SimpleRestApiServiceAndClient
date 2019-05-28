@@ -15,7 +15,7 @@ namespace SimpleRestApiClientApplication
     {
         private static readonly HttpClient client = new HttpClient();
      
-         public static async Task<T> Get(string url,string contentType, string userAgent)
+        public static async Task<T> Get(string url,string contentType, string userAgent)
         {
             var serializer = new DataContractJsonSerializer(typeof(T));
             client.DefaultRequestHeaders.Accept.Clear();
@@ -26,7 +26,6 @@ namespace SimpleRestApiClientApplication
             var streamTask = client.GetStreamAsync(url);
             T responsePayload = (T)serializer.ReadObject(await streamTask);
             return responsePayload;
-
         }
     }
 }
