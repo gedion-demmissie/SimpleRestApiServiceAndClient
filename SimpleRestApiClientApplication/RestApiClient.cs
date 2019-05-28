@@ -14,13 +14,8 @@ namespace SimpleRestApiClientApplication
     public class RestApiClient<T>
     {
         private static readonly HttpClient client = new HttpClient();
-
-        private static IConfigurationBuilder builder = new ConfigurationBuilder()
-                                                         .SetBasePath(Directory.GetCurrentDirectory())
-                                                         .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                                                         .AddEnvironmentVariables();
-
-        public static async Task<T> Get(string url,string contentType, string userAgent)
+     
+         public static async Task<T> Get(string url,string contentType, string userAgent)
         {
             var serializer = new DataContractJsonSerializer(typeof(T));
             client.DefaultRequestHeaders.Accept.Clear();
